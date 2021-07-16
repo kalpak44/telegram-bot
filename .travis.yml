@@ -1,5 +1,6 @@
 sudo: true
 language: java
+dist: bionic
 services:
   - docker
 script:
