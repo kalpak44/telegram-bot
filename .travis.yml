@@ -18,7 +18,6 @@ script:
 #  - docker build -t telegram-bot .
 #  - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
 #  - docker push kalpak44/telegram-bot:latest
-  - ssh -v $VPS_HOST
   - echo ($SSH_RSA | base64 -d)
   - ssh-add - <<< ($SSH_RSA | base64 -d)
   - ssh $VPS_USERNAME@$VPS_HOST
