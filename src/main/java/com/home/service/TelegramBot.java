@@ -8,11 +8,20 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class KalpakBot extends TelegramLongPollingBot {
-    private static final Logger logger = LoggerFactory.getLogger(KalpakBot.class);
+public class TelegramBot extends TelegramLongPollingBot {
+    private static final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
     private final UrlBuilder urlBuilder;
     @Value("${bot.token}")
     private String token;
@@ -20,7 +29,7 @@ public class KalpakBot extends TelegramLongPollingBot {
     @Value("${bot.username}")
     private String username;
 
-    public KalpakBot(UrlBuilder urlBuilder) {
+    public TelegramBot(UrlBuilder urlBuilder) {
         this.urlBuilder = urlBuilder;
     }
 
@@ -48,33 +57,55 @@ public class KalpakBot extends TelegramLongPollingBot {
             try {
                 if (text != null && (text.contains("нов") || text.contains("new") || text.contains("nov"))) {
                     urlBuilder.clean();
-                    response.setText("Напиши ми ся името на продукта");
+                    response.setText("името на продукта");
                     previousCommand = "new";
                 } else if (previousCommand != null && previousCommand.equals("new") && text != null) {
                     if (text.isEmpty()) {
-                        response.setText("Грешно име на продукта. Напишете ми го отново");
+                        response.setText("Грешно име");
                     } else {
                         urlBuilder.setProductName(text);
-                        response.setText("Добре. Продукта ви ще се казва \"" + text + "\"\n" +
-                                "Колко ще струва той (в центове [min 100])?");
+                        response.setText("Добре. Продукта \"" + text + "\"\n" +
+                                "Колко ще струва той?");
                         previousCommand = "name_created";
                     }
                 } else if (previousCommand != null && previousCommand.equals("name_created") && text != null) {
                     try {
-                        long price = Long.parseLong(text);
+                        long price;
+                        if (!text.contains(".")) {
+                            price = Long.parseLong(text) * 100;
+                        } else {
+                            price = new BigDecimal(text).multiply(new BigDecimal("100")).setScale(0, RoundingMode.UP).longValue();
+                        }
                         urlBuilder.setPrice(price);
                         previousCommand = "price_created";
-                        response.setText("Желаема валута? Достъпни тук => https://stripe.com/docs/currencies#presentment-currencies");
+                        //https://stripe.com/docs/currencies#presentment-currencies
+                        response.setText("Желаема валута?");
+                        // Create ReplyKeyboardMarkup object
+                        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                        // Create the keyboard (list of keyboard rows)
+                        List<KeyboardRow> keyboard = new ArrayList<>();
+                        // Create a keyboard row
+                        KeyboardRow row = new KeyboardRow();
+                        // Set each button, you can also use KeyboardButton objects if you need something else than text
+                        row.add("USD");
+                        row.add("EUR");
+                        row.add("GBP");
+                        // Add the first row to the keyboard
+                        keyboard.add(row);
+
+                        // Set the keyboard to the markup
+                        keyboardMarkup.setKeyboard(keyboard);
+                        response.setReplyMarkup(keyboardMarkup);
                     } catch (Exception e) {
-                        response.setText("Цената ви трябва да е някакво число. Опитай отново");
+                        response.setText("Цената ви трябва да е число по голямо от 0");
                     }
                 } else if (previousCommand != null && previousCommand.equals("price_created") && text != null) {
                     if (text.isEmpty()) {
-                        response.setText("Вкарай някаква цена. Виж достъпните https://stripe.com/docs/currencies#presentment-currencies");
+                        response.setText("Вкарай някаквавалута");
                     } else {
                         urlBuilder.setCurrency(text);
                         response.setText("оки...." +
-                                "Колко бройки ще искаме?");
+                                "брой?");
                         previousCommand = "currency_created";
                     }
                 } else if (previousCommand != null && previousCommand.equals("currency_created") && text != null) {
@@ -86,15 +117,15 @@ public class KalpakBot extends TelegramLongPollingBot {
                     } catch (Exception e) {
                         response.setText("Бройката ви трябва да е число. Опитай отново");
                     }
-                }else {
+                } else {
                     response.setText("Не разбрах какво имате предвид. Напиши \"нов продукт\" да започнем");
                     previousCommand = null;
                 }
 
-                if(previousCommand != null && previousCommand.equals("quantity_created")){
+                if (previousCommand != null && previousCommand.equals("quantity_created")) {
                     try {
                         response.setText(urlBuilder.build());
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         response.setText(e.getMessage());
                     }
                     previousCommand = null;
