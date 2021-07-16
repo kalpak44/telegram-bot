@@ -1,3 +1,5 @@
 language: java
 sudo: false
-script: java --version
+script:
+  - java --version
+  - echo ${var:empty_value}
