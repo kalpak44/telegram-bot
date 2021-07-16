@@ -1,5 +1,4 @@
 sudo: true
-language: java
 dist: bionic
 # before_install:
 #  - sudo rm -rf /var/lib/apt/lists/*
@@ -10,7 +9,9 @@ dist: bionic
 #  - mkdir -vp ~/.docker/cli-plugins/
 #  - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.3.0/buildx-v0.3.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
 #  - chmod a+x ~/.docker/cli-plugins/docker-buildx
-
+addons:
+  ssh_known_hosts:
+    - @$VPS_HOST
 script:
   - java --version
   - docker --version
