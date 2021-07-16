@@ -1,5 +1,9 @@
+sudo: true
 language: java
-sudo: false
+services:
+  - docker
 script:
   - java --version
   - echo $var
+after_success:
+  - docker --version
