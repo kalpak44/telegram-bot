@@ -1,0 +1,10 @@
+bot:
+  token: token
+  username: username
+payments:
+  stripe:
+    success-url: https://kalpak44-bot.herokuapp.com//success
+    cancel-url: https://kalpak44-bot.herokuapp.com//cancel
+    key:
+      public: public_key
+      secret: secret
