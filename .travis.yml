@@ -13,8 +13,6 @@ dist: bionic
 addons:
   ssh_known_hosts:
     - @$VPS_HOST
-install:
-  -  echo $SSH_RSA | base64 -d >> $HOME/.ssh/known_hosts
 script:
   - java --version
   - docker --version
@@ -22,5 +20,8 @@ script:
 #  - docker build -t telegram-bot .
 #  - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
 #  - docker push kalpak44/telegram-bot:latest
+  - $SSH_RSA | base64 -d > ~/.ssh/id_rsa
+  - cat ~/.ssh/id_rsa
+  - ssh-add ~/.ssh/id_rsa
   - ssh $VPS_USERNAME@$VPS_HOST
   - docker ps --all
