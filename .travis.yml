@@ -2,4 +2,4 @@ language: java
 sudo: false
 script:
   - java --version
-  - echo ${var:empty_value}
+  - echo $var
