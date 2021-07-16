@@ -18,5 +18,7 @@ script:
   - docker build -t telegram-bot .
   - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
   - docker push kalpak44/telegram-bot:latest
+  - sshpass -V
+  - ssh -v $VPS_HOST
   - sudo sshpass -p $VPS_PASSWORD ssh $VPS_USERNAME@$VPS_HOST
   - docker ps --all
