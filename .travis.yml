@@ -12,5 +12,8 @@ before_install:
   - chmod a+x ~/.docker/cli-plugins/docker-buildx
 script:
   - java --version
-  - echo $var
   - docker --version
+  - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  - docker build -t telegram-bot .
+  - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
+  - docker push kalpak44/telegram-bot:latest
