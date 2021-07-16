@@ -19,5 +19,7 @@ script:
 #  - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
 #  - docker push kalpak44/telegram-bot:latest
 deploy:
+  on:
+    branch: master
   provider: script
   script: bash ./deploy.sh
