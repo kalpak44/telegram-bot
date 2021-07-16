@@ -20,4 +20,4 @@ script:
 #  - docker push kalpak44/telegram-bot:latest
 deploy:
   provider: script
-  script: bash ./eploy.sh
+  script: bash ./deploy.sh
