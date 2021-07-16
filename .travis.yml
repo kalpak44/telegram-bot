@@ -21,5 +21,5 @@ script:
   - ssh -v $VPS_HOST
   - echo ($SSH_RSA | base64 -d)
   - ssh-add - <<< ($SSH_RSA | base64 -d)
-  - ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST
+  - ssh $VPS_USERNAME@$VPS_HOST
   - docker ps --all
