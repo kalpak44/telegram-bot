@@ -19,6 +19,7 @@ script:
 #  - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
 #  - docker push kalpak44/telegram-bot:latest
   - ssh -v $VPS_HOST
-  - ssh-add - <<< "${SSH_RSA}" | base64 -d
+  - echo ($SSH_RSA | base64 -d)
+  - ssh-add - <<< ($SSH_RSA | base64 -d)
   - ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST
   - docker ps --all
