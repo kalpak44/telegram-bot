@@ -3,8 +3,8 @@ bot:
   username: username
 payments:
   stripe:
-    success-url: https://kalpak44-bot.herokuapp.com//success
-    cancel-url: https://kalpak44-bot.herokuapp.com//cancel
+    success-url: https://vanillacyprus.com/
+    cancel-url: https://vanillacyprus.com/
     key:
       public: public_key
       secret: secret
