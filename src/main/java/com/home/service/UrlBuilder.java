@@ -60,13 +60,13 @@ public class UrlBuilder {
     }
     public String build(){
         if(productName == null){
-            throw new RuntimeException("моля ти се - вмъкни име");
+            throw new RuntimeException("No product name was found");
         }else if(quantity == null){
-            throw new RuntimeException("моля ти се - вмъкни бройка");
+            throw new RuntimeException("No quantity name was found");
         }else if(price == null){
-            throw new RuntimeException("моля ти се - вмъкни бройка");
+            throw new RuntimeException("No price name was found");
         }else if(currency == null){
-            throw new RuntimeException("моля ти се - вмъкни бройка");
+            throw new RuntimeException("No currency name was found");
         }
         try {
             return stripeComponent.createCheckOutPage(price, currency, quantity, productName);
