@@ -9,12 +9,7 @@ before_install:
   $(lsb_release -cs) edge"
 - sudo apt-get update
 - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-- echo -e "Host $VPS_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- echo $VPS_KEY | base64 --decode > ~/.ssh/travis_rsa
-- chmod 600 ~/.ssh/travis_rsa
-- eval "$(ssh-agent -s)"
-- ssh-add ~/.ssh/travis_rsa
-- ssh -i ~/.ssh/travis_rsa -o UserKnownHostsFile=/dev/null  $VPS_USERNAME@$VPS_HOST "docker version"
+
 script:
 - java --version
 - docker --version
@@ -22,3 +17,15 @@ script:
 - docker build -t telegram-bot .
 - docker tag telegram-bot:latest kalpak44/telegram-bot:latest
 - docker push kalpak44/telegram-bot:latest
+
+deploy:
+  provider: script
+  on:
+    branch: main
+  script:
+    echo -e "Host $VPS_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    echo $VPS_KEY | base64 --decode > ~/.ssh/travis_rsa
+    chmod 600 ~/.ssh/travis_rsa
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/travis_rsa
+    ssh -i ~/.ssh/travis_rsa -o UserKnownHostsFile=/dev/null  $VPS_USERNAME@$VPS_HOST "docker version"
