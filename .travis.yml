@@ -9,8 +9,9 @@ before_install:
   $(lsb_release -cs) edge"
 - sudo apt-get update
 - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-- echo $VPS_KEY | base64 --decode > ~/.ssh/id_rsa
-- ssh -o "StrictHostKeyChecking no" $VPS_USERNAME@$VPS_HOST "docker version"
+- echo $VPS_KEY | base64 --decode > ~/.ssh/travis_rsa
+- ssh-add ~/.ssh/travis_rsa
+- ssh -i ~/.ssh/travis_rsa -o UserKnownHostsFile=/dev/null  $VPS_USERNAME@$VPS_HOST "docker version"
 script:
 - java --version
 - docker --version
