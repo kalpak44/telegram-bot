@@ -2,6 +2,9 @@ sudo: true
 language: bash
 dist: bionic
 
+addons:
+  ssh_known_hosts: "$VPS_HOST"
+
 before_install:
 - sudo rm -rf /var/lib/apt/lists/*
 - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
