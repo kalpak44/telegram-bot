@@ -15,7 +15,7 @@ script:
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 - docker build -t telegram-bot .
 - docker tag telegram-bot:latest kalpak44/telegram-bot:$TRAVIS_BRANCH
-- docker push kalpak44/telegram-bot:latest
+- docker push kalpak44/telegram-bot:$TRAVIS_BRANCH
 
 deploy:
   # deploy main to production
