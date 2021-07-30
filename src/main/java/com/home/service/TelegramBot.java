@@ -112,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         response.setText("(@_@) Бройката ви трябва да е число. Опитай отново");
                     }
                 } else {
-                    response.setText("「(°ヘ°) Не разбрах какво имате предвид. Напиши \"new\" да започнем");
+                    response.setText("「(°ヘ°) Напиши \"new\" да започнем");
                     previousCommand = null;
                 }
 
