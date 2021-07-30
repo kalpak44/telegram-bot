@@ -46,6 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private String previousCommand;
 
+    // TODO: 30.07.2021 rework me
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
@@ -80,20 +81,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                         previousCommand = "price_created";
                         //https://stripe.com/docs/currencies#presentment-currencies
                         response.setText("Желаема валута?");
-                        // Create ReplyKeyboardMarkup object
                         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                        // Create the keyboard (list of keyboard rows)
                         List<KeyboardRow> keyboard = new ArrayList<>();
-                        // Create a keyboard row
                         KeyboardRow row = new KeyboardRow();
-                        // Set each button, you can also use KeyboardButton objects if you need something else than text
                         row.add("USD");
                         row.add("EUR");
                         row.add("GBP");
-                        // Add the first row to the keyboard
                         keyboard.add(row);
-
-                        // Set the keyboard to the markup
                         keyboardMarkup.setKeyboard(keyboard);
                         response.setReplyMarkup(keyboardMarkup);
                     } catch (Exception e) {

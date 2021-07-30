@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  telegram-bot:
+    restart: always
+    image: kalpak44/telegram-bot:${TAG_NAME}
+    container_name: telegram-bot
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      BOT_USERNAME: ${BOT_USERNAME}
+      PAYMENTS_STRIPE_KEY_PUBLIC: ${PAYMENTS_STRIPE_KEY_PUBLIC}
+      PAYMENTS_STRIPE_KEY_SECRET: ${PAYMENTS_STRIPE_KEY_SECRET}

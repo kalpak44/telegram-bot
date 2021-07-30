@@ -5,3 +5,4 @@ chmod 600 ~/.ssh/travis_rsa
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/travis_rsa
 ssh -i ~/.ssh/travis_rsa -o UserKnownHostsFile=/dev/null  $VPS_USERNAME@$VPS_HOST "docker version"
+scp ../docker-compose.yml $VPS_USERNAME@$VPS_HOST:/root/docker-compose
