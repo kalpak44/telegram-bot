@@ -8,15 +8,14 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -28,6 +27,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Value("${bot.username}")
     private String username;
+
+    private List<String> currencies = Arrays.asList("USD", "AED", "ALL", "AMD", "ANG", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BIF", "BMD", "BND", "BSD", "BWP", "BZD", "CAD", "CDF", "CHF", "CNY", "CZK", "DKK", "DOP", "DZD", "EGP", "ETB", "EUR", "FJD", "GBP", "GEL", "GIP", "GMD", "GYD", "HKD", "HRK", "HTG", "HUF", "IDR", "ILS", "ISK", "JMD", "JPY", "KES", "KGS", "KHR", "KMF", "KRW", "KYD", "KZT", "LBP", "LKR", "LRD", "LSL", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NOK", "NPR", "NZD", "PGK", "PHP", "PKR", "PLN", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SEK", "SGD", "SLL", "SOS", "SZL", "THB", "TJS", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "UZS", "VND", "VUV", "WST", "XAF", "XCD", "YER", "ZAR", "ZMW");
 
     public TelegramBot(UrlBuilder urlBuilder) {
         this.urlBuilder = urlBuilder;
@@ -94,8 +95,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                         response.setText("Цената ви трябва да е число по голямо от 0");
                     }
                 } else if (previousCommand != null && previousCommand.equals("price_created") && text != null) {
-                    if (text.isEmpty()) {
-                        response.setText("Не въведена валута. Опитай отново");
+                    if (text.isEmpty() || !currencies.contains(text)) {
+                        response.setText("(@_@) Не въведена валута. Опитай отново. Разрешени са: " + currencies.toString());
                     } else {
                         urlBuilder.setCurrency(text);
                         response.setText("оки.... брой?");
@@ -108,10 +109,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                         previousCommand = "quantity_created";
                         response.setText("Готови сме.\n");
                     } catch (Exception e) {
-                        response.setText("Бройката ви трябва да е число. Опитай отново");
+                        response.setText("(@_@) Бройката ви трябва да е число. Опитай отново");
                     }
                 } else {
-                    response.setText("Не разбрах какво имате предвид. Напиши \"new\" да започнем");
+                    response.setText("「(°ヘ°) Не разбрах какво имате предвид. Напиши \"new\" да започнем");
                     previousCommand = null;
                 }
 
