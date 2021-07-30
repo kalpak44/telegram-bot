@@ -49,6 +49,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     // TODO: 30.07.2021 rework me
     @Override
     public void onUpdateReceived(Update update) {
+        logger.info("onUpdateReceived");
         if (update.hasMessage()) {
             Message message = update.getMessage();
             SendMessage response = new SendMessage();
