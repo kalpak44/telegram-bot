@@ -14,7 +14,7 @@ script:
 - docker --version
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 - docker build -t telegram-bot .
-#- docker tag telegram-bot:$TRAVIS_COMMIT kalpak44/telegram-bot:$TRAVIS_COMMIT
+- docker tag telegram-bot kalpak44/telegram-bot:$TRAVIS_COMMIT
 - docker push kalpak44/telegram-bot:$TRAVIS_COMMIT
 
 deploy:
