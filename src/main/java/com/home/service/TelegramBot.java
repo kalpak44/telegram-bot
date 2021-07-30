@@ -49,7 +49,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     // TODO: 30.07.2021 rework me
     @Override
     public void onUpdateReceived(Update update) {
-        logger.info("onUpdateReceived");
         if (update.hasMessage()) {
             Message message = update.getMessage();
             SendMessage response = new SendMessage();
@@ -67,7 +66,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     } else {
                         urlBuilder.setProductName(text);
                         response.setText("Добре. Продукта \"" + text + "\"\n" +
-                                "Колко ще струва той?");
+                                "Цена?");
                         previousCommand = "name_created";
                     }
                 } else if (previousCommand != null && previousCommand.equals("name_created") && text != null) {
@@ -81,7 +80,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         urlBuilder.setPrice(price);
                         previousCommand = "price_created";
                         //https://stripe.com/docs/currencies#presentment-currencies
-                        response.setText("Желаема валута?");
+                        response.setText("валута?");
                         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
                         List<KeyboardRow> keyboard = new ArrayList<>();
                         KeyboardRow row = new KeyboardRow();
@@ -96,11 +95,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                 } else if (previousCommand != null && previousCommand.equals("price_created") && text != null) {
                     if (text.isEmpty()) {
-                        response.setText("Вкарай някаквавалута");
+                        response.setText("Не въведена валута. Опитай отново");
                     } else {
                         urlBuilder.setCurrency(text);
-                        response.setText("оки...." +
-                                "брой?");
+                        response.setText("оки.... брой?");
                         previousCommand = "currency_created";
                     }
                 } else if (previousCommand != null && previousCommand.equals("currency_created") && text != null) {
@@ -113,7 +111,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         response.setText("Бройката ви трябва да е число. Опитай отново");
                     }
                 } else {
-                    response.setText("Не разбрах какво имате предвид. Напиши \"нов продукт\" да започнем");
+                    response.setText("Не разбрах какво имате предвид. Напиши \"new\" да започнем");
                     previousCommand = null;
                 }
 
