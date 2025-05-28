@@ -6,6 +6,8 @@ import com.home.config.StripeConfig;
 import com.home.stripe.StripeLinkCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -23,5 +25,13 @@ public class Main {
 
         var stripeLinkCreator = new StripeLinkCreator(stripeConfig);
         var telegramBot = new PaymentBot(botConfig, stripeLinkCreator);
+
+        try {
+            var botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            botsApi.registerBot(telegramBot);
+            log.info("Bot successfully registered.");
+        } catch (Exception e) {
+            log.error("Failed to register bot: {}", e.getMessage(), e);
+        }
     }
 }
