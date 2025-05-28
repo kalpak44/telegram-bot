@@ -11,6 +11,7 @@
 
     <properties>
         <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
     </properties>
 
     <dependencies>
@@ -45,23 +46,25 @@
 
     <build>
         <plugins>
+            <!-- Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>17</release>
-                    <source>17</source>
-                    <target>17</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
+
+            <!-- Jib for Docker image building -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
                     <from>
-                        <image>eclipse-temurin:17-jre</image>
+                        <!-- Use an ARM32-compatible base image -->
+                        <image>arm32v7/eclipse-temurin:17-jre</image>
                     </from>
                     <to>
                         <image>kalpak44/telegram-bot</image>
@@ -72,14 +75,6 @@
                     <container>
                         <mainClass>com.home.Main</mainClass>
                     </container>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
