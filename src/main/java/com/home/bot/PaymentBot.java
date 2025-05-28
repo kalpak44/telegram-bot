@@ -53,7 +53,7 @@ public class PaymentBot extends TelegramLongPollingBot {
         if ("/start".equalsIgnoreCase(text)) {
             userState.put(chatId, State.WAITING_FOR_PRICE);
             userInput.put(chatId, new ProductInfo(0, null, null, 0));
-            sendMessage(chatId, "Enter price and currency (e.g. 10.00 USD):");
+            sendMessage(chatId, "Please enter the price and currency in this format: 10.00 USD. Supported currencies: https://docs.stripe.com/currencies");
             return;
         }
 
@@ -69,7 +69,7 @@ public class PaymentBot extends TelegramLongPollingBot {
             case WAITING_FOR_PRICE -> {
                 var parts = text.split(" ");
                 if (parts.length != 2) {
-                    sendMessage(chatId, "Invalid format. Please enter price and currency (e.g. 10.00 USD):");
+                    sendMessage(chatId, "Invalid format. Please enter the price and currency in this format: 10.00 USD. Supported currencies: https://docs.stripe.com/currencies");
                     return;
                 }
                 try {
