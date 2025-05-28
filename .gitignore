@@ -25,4 +25,4 @@
 hs_err_pid*
 
 # dev config
-application-dev.yml
+config.properties

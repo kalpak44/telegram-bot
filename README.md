@@ -42,6 +42,7 @@ This bot loads configuration in the following priority:
 |-------------------------------|-----------------------------------|
 | `BOT_TOKEN`                   | Telegram bot token                |
 | `BOT_USERNAME`                | Telegram bot username             |
+| `PAYMENTS_STRIPE_KEY_PUBLIC`  | Stripe public key                 |
 | `PAYMENTS_STRIPE_KEY_SECRET`  | Stripe secret key                 |
 | `PAYMENTS_STRIPE_SUCCESS_URL` | Redirect after successful payment |
 | `PAYMENTS_STRIPE_CANCEL_URL`  | Redirect after canceled payment   |
@@ -51,6 +52,7 @@ This bot loads configuration in the following priority:
 ```dotenv
 BOT_TOKEN=your-telegram-bot-token
 BOT_USERNAME=your-bot-username
+PAYMENTS_STRIPE_KEY_PUBLIC=pk_test_...
 PAYMENTS_STRIPE_KEY_SECRET=sk_test_...
 PAYMENTS_STRIPE_SUCCESS_URL=https://yourapp.com/success
 PAYMENTS_STRIPE_CANCEL_URL=https://yourapp.com/cancel
