@@ -63,7 +63,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <from>
-                        <image>arm32v7/eclipse-temurin</image>
+                        <image>arm32v7/eclipse-temurin:17-jre</image>
                     </from>
                     <to>
                         <image>kalpak44/telegram-bot</image>
