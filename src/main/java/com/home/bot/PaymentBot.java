@@ -43,6 +43,26 @@ public class PaymentBot extends TelegramLongPollingBot {
         var text = message.getText().trim();
         var chatId = message.getChatId();
 
+        if ("/help".equalsIgnoreCase(text)) {
+            sendMessage(chatId, """
+            🤖 *PaymentBot Help*
+
+            Available commands:
+            /start - Begin payment link creation
+            /cancel - Cancel current operation
+            /help - Show this help message
+
+            Input format guidance:
+            - After /start, provide the price and currency (e.g. `10.00 USD`)
+              ↳ Supported currencies: https://docs.stripe.com/currencies
+            - Then, enter the product name
+            - Finally, provide the quantity
+
+            The bot will return a Stripe payment link based on your input.
+            """);
+            return;
+        }
+
         if ("/cancel".equalsIgnoreCase(text)) {
             userState.remove(chatId);
             userInput.remove(chatId);
