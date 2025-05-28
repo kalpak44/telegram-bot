@@ -29,7 +29,7 @@ quantity).
 
 ---
 
-### 3. ⚙️ Configuration via Environment Variables
+### 3. Configuration via Environment Variables
 
 This bot loads configuration in the following priority:
 
@@ -60,25 +60,26 @@ PAYMENTS_STRIPE_CANCEL_URL=https://yourapp.com/cancel
 
 ### 4. Running in Docker
 
-#### Dockerfile-Free Build (Jib)
+#### Using Dockerfile
 
-You can build and run using [Jib](https://github.com/GoogleContainerTools/jib) without a Dockerfile.
+You can build and run the application using a standard `Dockerfile`.
 
-#### Build Image
+##### Build the application
 
 ```bash
-mvn compile jib:dockerBuild -Dimage=kalpak44/telegram-bot:latest
+mvn clean package -DskipTests
 ```
 
-#### Run Image
+##### Build the Docker image
 
 ```bash
-docker run -e BOT_TOKEN=your-token \
-           -e BOT_USERNAME=your-bot \
-           -e PAYMENTS_STRIPE_KEY_SECRET=sk_test_... \
-           -e PAYMENTS_STRIPE_SUCCESS_URL=https://yourapp.com/success \
-           -e PAYMENTS_STRIPE_CANCEL_URL=https://yourapp.com/cancel \
-           kalpak44/telegram-bot:latest
+docker build -t kalpak44/telegram-bot:latest .
+```
+
+##### Run the container
+
+```bash
+docker run --rm kalpak44/telegram-bot:latest
 ```
 
 ---
