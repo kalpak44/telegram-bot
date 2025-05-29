@@ -1,231 +1,116 @@
 package com.home.bot;
 
+import com.home.bot.command.api.CommandHandler;
+import com.home.bot.common.api.MessageSender;
+import com.home.bot.session.SessionManager;
+import com.home.bot.state.api.StateInputHandler;
 import com.home.config.BotConfig;
-import com.home.model.ProductInfo;
-import com.home.model.State;
-import com.home.model.TimedProductInfo;
-import com.home.stripe.StripeLinkCreator;
-import com.stripe.exception.StripeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 /**
- * PaymentBot is a Telegram bot that helps users generate Stripe payment links by guiding them
- * through a short flow of entering product details.
- *
- * <p>Commands: - /start: starts the process - /cancel: cancels the current session - /help: shows
- * usage instructions
+ * PaymentBot is a Telegram bot that guides users through payment link creation via Stripe.
+ * <p>
+ * It handles both command messages (e.g. /start, /help) and stateful user input.
  */
 public class PaymentBot extends TelegramLongPollingBot {
-    private static final Logger log = LoggerFactory.getLogger(PaymentBot.class);
-    private static final Duration SESSION_TTL = Duration.ofHours(1);
 
-    /**
-     * Configuration details such as bot token and username.
-     */
     private final BotConfig botConfig;
 
-    /**
-     * Stripe utility used to generate payment links.
-     */
-    private final StripeLinkCreator stripeLinkCreator;
+    private SessionManager sessionManager;
+    private List<CommandHandler> commandHandlers;
+    private List<StateInputHandler> stateHandlers;
+    private MessageSender messageSender;
 
     /**
-     * Keeps track of current state for each user session.
-     */
-    private final Map<Long, State> userState = new ConcurrentHashMap<>();
-
-    /**
-     * Stores user input data along with timestamp for expiration handling.
-     */
-    private final Map<Long, TimedProductInfo> userInput = new ConcurrentHashMap<>();
-
-    /**
-     * Constructs a new PaymentBot instance.
+     * Constructs a basic PaymentBot instance. Handlers and dependencies must be injected via `withX()` methods.
      *
-     * @param botConfig         the configuration for the bot (token, username, etc.)
-     * @param stripeLinkCreator helper for creating Stripe payment links
+     * @param botConfig the configuration used to initialize the bot
      */
-    public PaymentBot(BotConfig botConfig, StripeLinkCreator stripeLinkCreator) {
+    public PaymentBot(BotConfig botConfig) {
         super(botConfig.token());
         this.botConfig = botConfig;
-        this.stripeLinkCreator = stripeLinkCreator;
     }
 
-    /**
-     * Returns the bot's username used on Telegram.
-     *
-     * @return bot username
-     */
     @Override
     public String getBotUsername() {
         return botConfig.username();
     }
 
     /**
-     * Processes incoming updates from Telegram.
+     * Called by Telegram when an update (message) is received.
+     * Delegates to either a command handler or a state handler, or sends fallback if unmatched.
      *
-     * @param update incoming message or command
+     * @param update the Telegram update
      */
     @Override
     public void onUpdateReceived(Update update) {
         if (!update.hasMessage() || !update.getMessage().hasText()) return;
 
         var message = update.getMessage();
-        var text = message.getText().trim();
         var chatId = message.getChatId();
+        var text = message.getText().trim();
 
-        if ("/help".equalsIgnoreCase(text)) {
-            sendMessage(
-                    chatId,
-                    """
-                            🤖 *PaymentBot Help*
-                            
-                            Available commands:
-                            /start – Begin payment link creation
-                            /cancel – Cancel current operation
-                            /status – Check your current input progress
-                            /help – Show this help message
-                            
-                            💡 Input guidance:
-                            - After /start, provide the price and currency (e.g. `10.00 USD`)
-                              ↳ Supported currencies: https://docs.stripe.com/currencies
-                            - Then, enter the product name
-                            - Finally, provide the quantity
-                            
-                            The bot will return a Stripe payment link based on your input.
-                            """);
-            return;
-        }
-
-        if ("/cancel".equalsIgnoreCase(text)) {
-            userState.remove(chatId);
-            userInput.remove(chatId);
-            sendMessage(chatId, "Cancelled.");
-            return;
-        }
-
-        if ("/start".equalsIgnoreCase(text)) {
-            userState.put(chatId, State.WAITING_FOR_PRICE);
-            userInput.put(chatId, new TimedProductInfo(new ProductInfo(0, null, null, 0), Instant.now()));
-            sendMessage(
-                    chatId,
-                    "Please enter the price and currency in this format: 10.00 USD. Supported currencies: https://docs.stripe.com/currencies");
-            return;
-        }
-
-        if ("/status".equalsIgnoreCase(text)) {
-            var timedInfo = userInput.get(chatId);
-            var state = userState.get(chatId);
-
-            if (timedInfo == null || state == null ||
-                    Duration.between(timedInfo.timestamp(), Instant.now()).compareTo(SESSION_TTL) > 0) {
-                sendMessage(chatId, "No active session. Send /start to begin.");
-            } else {
-                var info = timedInfo.info();
-                sendMessage(chatId, String.format("""
-                📝 *Current Status*
-                State: `%s`
-
-                Price: %s
-                Currency: %s
-                Product: %s
-                Quantity: %s
-                """,
-                        state,
-                        info.price() > 0 ? (info.price() / 100.0) : "(not set)",
-                        info.currency() != null ? info.currency() : "(not set)",
-                        info.name() != null ? info.name() : "(not set)",
-                        info.quantity() > 0 ? info.quantity() : "(not set)"
-                ));
-            }
-            return;
-        }
-
-
-        var state = userState.get(chatId);
-        var timedInfo = userInput.get(chatId);
-
-        if (state == null
-                || timedInfo == null
-                || Duration.between(timedInfo.timestamp(), Instant.now()).compareTo(SESSION_TTL) > 0) {
-            userState.remove(chatId);
-            userInput.remove(chatId);
-            sendMessage(chatId, "Your session has expired. Please send /start to begin again.");
-            return;
-        }
-
-        var info = timedInfo.info();
-
-        switch (state) {
-            case WAITING_FOR_PRICE -> {
-                var parts = text.split(" ");
-                if (parts.length != 2) {
-                    sendMessage(
-                            chatId,
-                            "Invalid format. Please enter the price and currency in this format: 10.00 USD. Supported currencies: https://docs.stripe.com/currencies");
-                    return;
-                }
-                try {
-                    var price = (long) (Double.parseDouble(parts[0]) * 100);
-                    var currency = parts[1].toLowerCase();
-                    info = new ProductInfo(price, currency, null, 0);
-                    userInput.put(chatId, new TimedProductInfo(info, Instant.now()));
-                    userState.put(chatId, State.WAITING_FOR_NAME);
-                    sendMessage(chatId, "Enter product name:");
-                } catch (NumberFormatException e) {
-                    log.warn("Invalid price input '{}': {}", text, e.getMessage());
-                    sendMessage(chatId, "Invalid price format.");
-                }
-            }
-            case WAITING_FOR_NAME -> {
-                info = new ProductInfo(info.price(), info.currency(), text, 0);
-                userInput.put(chatId, new TimedProductInfo(info, Instant.now()));
-                userState.put(chatId, State.WAITING_FOR_QUANTITY);
-                sendMessage(chatId, "Enter quantity:");
-            }
-            case WAITING_FOR_QUANTITY -> {
-                try {
-                    int quantity = Integer.parseInt(text);
-                    info = new ProductInfo(info.price(), info.currency(), info.name(), quantity);
-                    userInput.put(chatId, new TimedProductInfo(info, Instant.now()));
-
-                    var url = stripeLinkCreator.createStripeLink(info);
-                    sendMessage(chatId, "Here is your payment link:\n" + url);
-
-                    userState.remove(chatId);
-                    userInput.remove(chatId);
-                } catch (NumberFormatException e) {
-                    log.warn("Invalid quantity input '{}': {}", text, e.getMessage());
-                    sendMessage(chatId, "Invalid quantity format.");
-                } catch (StripeException e) {
-                    log.error("Stripe error: {}", e.getMessage());
-                    sendMessage(chatId, "Failed to generate Stripe payment link. Please try again later.");
-                }
+        // 1. Check if the message is a command like /start or /help
+        for (var handler : commandHandlers) {
+            if (handler.canHandle(text)) {
+                handler.handle(chatId);
+                return;
             }
         }
+
+        // 2. Check session validity
+        var state = sessionManager.getState(chatId);
+        if (sessionManager.isExpired(chatId)) {
+            sessionManager.clear(chatId);
+            messageSender.send(chatId, "Your session has expired. Please send /start to begin again.");
+            return;
+        }
+
+        // 3. Delegate input based on user's current state
+        for (var handler : stateHandlers) {
+            if (handler.canHandle(state)) {
+                handler.handle(chatId, text);
+                return;
+            }
+        }
+
+        // 4. If input doesn't match anything, show fallback message
+        messageSender.send(chatId, "Unexpected input. Please use /help.");
+    }
+
+
+    /**
+     * Injects the message sender used to send responses to Telegram users.
+     */
+    public PaymentBot withMessageSender(MessageSender messageSender) {
+        this.messageSender = messageSender;
+        return this;
     }
 
     /**
-     * Sends a text message to a specific Telegram chat.
-     *
-     * @param chatId the ID of the chat
-     * @param text   the message content to send
+     * Injects the session manager that tracks user state and input.
      */
-    private void sendMessage(Long chatId, String text) {
-        try {
-            execute(SendMessage.builder().chatId(chatId.toString()).text(text).build());
-        } catch (TelegramApiException e) {
-            log.error("Failed to send message to {}: {}", chatId, e.getMessage());
-        }
+    public PaymentBot withSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+        return this;
+    }
+
+    /**
+     * Injects the list of command handlers that respond to commands like /start.
+     */
+    public PaymentBot withCommandHandlers(List<CommandHandler> commandHandlers) {
+        this.commandHandlers = commandHandlers;
+        return this;
+    }
+
+    /**
+     * Injects the list of state input handlers that process user input based on state.
+     */
+    public PaymentBot withStateHandlers(List<StateInputHandler> stateHandlers) {
+        this.stateHandlers = stateHandlers;
+        return this;
     }
 }
