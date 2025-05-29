@@ -62,7 +62,13 @@ public class PriceInputHandler implements StateInputHandler {
         }
 
         try {
-            var priceInCents = (long) (Double.parseDouble(parts[0]) * 100);
+            var price = Double.parseDouble(parts[0]);
+            if (price <= 0) {
+                messageSender.send(chatId, "Price must be a positive number.");
+                return;
+            }
+
+            var priceInCents = (long) (price * 100);
             var currency = parts[1].toLowerCase();
 
             // Update session with price and currency, reset other fields
