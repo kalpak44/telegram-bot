@@ -91,11 +91,12 @@ public class PaymentBot extends TelegramLongPollingBot {
                             🤖 *PaymentBot Help*
                             
                             Available commands:
-                            /start - Begin payment link creation
-                            /cancel - Cancel current operation
-                            /help - Show this help message
+                            /start – Begin payment link creation
+                            /cancel – Cancel current operation
+                            /status – Check your current input progress
+                            /help – Show this help message
                             
-                            Input format guidance:
+                            💡 Input guidance:
                             - After /start, provide the price and currency (e.g. `10.00 USD`)
                               ↳ Supported currencies: https://docs.stripe.com/currencies
                             - Then, enter the product name
@@ -121,6 +122,35 @@ public class PaymentBot extends TelegramLongPollingBot {
                     "Please enter the price and currency in this format: 10.00 USD. Supported currencies: https://docs.stripe.com/currencies");
             return;
         }
+
+        if ("/status".equalsIgnoreCase(text)) {
+            var timedInfo = userInput.get(chatId);
+            var state = userState.get(chatId);
+
+            if (timedInfo == null || state == null ||
+                    Duration.between(timedInfo.timestamp(), Instant.now()).compareTo(SESSION_TTL) > 0) {
+                sendMessage(chatId, "No active session. Send /start to begin.");
+            } else {
+                var info = timedInfo.info();
+                sendMessage(chatId, String.format("""
+                📝 *Current Status*
+                State: `%s`
+
+                Price: %s
+                Currency: %s
+                Product: %s
+                Quantity: %s
+                """,
+                        state,
+                        info.price() > 0 ? (info.price() / 100.0) : "(not set)",
+                        info.currency() != null ? info.currency() : "(not set)",
+                        info.name() != null ? info.name() : "(not set)",
+                        info.quantity() > 0 ? info.quantity() : "(not set)"
+                ));
+            }
+            return;
+        }
+
 
         var state = userState.get(chatId);
         var timedInfo = userInput.get(chatId);
