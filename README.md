@@ -18,7 +18,7 @@ quantity).
 
 ### 2.Set Up Stripe Account & Keys
 
-1. Go to [Stripe Dashboard](https://dashboard.stripe.com/).
+1. Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys/).
 2. Navigate to **Developers > API keys**.
 3. Copy the following:
     - **Secret key** → e.g., `sk_test_...`
