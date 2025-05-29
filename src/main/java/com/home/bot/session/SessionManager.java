@@ -81,7 +81,7 @@ public class SessionManager {
      */
     public boolean isExpired(Long chatId) {
         var timedInfo = getInfo(chatId);
-        return timedInfo == null ||
+        return timedInfo != null &&
                 Duration.between(timedInfo.timestamp(), Instant.now())
                         .compareTo(SESSION_TTL) > 0;
     }
