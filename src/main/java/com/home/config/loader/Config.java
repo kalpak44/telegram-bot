@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Properties;
 
+/**
+ * Loads configuration values from environment variables or a properties file.
+ *
+ * <p>Values are resolved in this order: 1. Environment variable (converted from key) 2.
+ * config.properties file on classpath
+ */
 public class Config {
     private static final Properties props = new Properties();
 
@@ -18,6 +24,13 @@ public class Config {
         }
     }
 
+    /**
+     * Gets the configuration value for the given key. Environment variable takes precedence over
+     * properties file.
+     *
+     * @param key the config key
+     * @return the config value, or null if not found
+     */
     public static String get(String key) {
         // Convert key to environment-style format: dots and dashes replaced with underscores, then
         // uppercased
@@ -29,6 +42,13 @@ public class Config {
         return props.getProperty(key);
     }
 
+    /**
+     * Gets a required configuration value.
+     *
+     * @param key the config key
+     * @return the config value
+     * @throws IllegalStateException if the key is missing or blank
+     */
     public static String getRequired(String key) {
         var value = get(key);
         if (value == null || value.isBlank()) {

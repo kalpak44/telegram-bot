@@ -2,9 +2,22 @@ package com.home.config;
 
 import com.home.config.loader.Config;
 
+/**
+ * Configuration for Stripe payments.
+ *
+ * @param publicKey  the Stripe public API key
+ * @param secretKey  the Stripe secret API key
+ * @param successUrl the URL to redirect to after a successful payment
+ * @param cancelUrl  the URL to redirect to if payment is cancelled
+ */
 public record StripeConfig(
         String publicKey, String secretKey, String successUrl, String cancelUrl) {
 
+    /**
+     * Loads Stripe configuration from environment variables or config.properties.
+     *
+     * @return a new StripeConfig instance with loaded values
+     */
     public static StripeConfig load() {
         var publicKey = Config.getRequired("payments.stripe.key.public");
         var secretKey = Config.getRequired("payments.stripe.key.secret");

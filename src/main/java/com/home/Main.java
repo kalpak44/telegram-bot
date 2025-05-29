@@ -9,9 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+/**
+ * Starts the Telegram payment bot.
+ */
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
+    /**
+     * Main method to run the bot.
+     */
     public static void main(String[] args) {
         log.info("Starting Telegram bot application...");
         var botConfig = BotConfig.load();

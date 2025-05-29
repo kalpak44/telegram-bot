@@ -40,6 +40,7 @@
     <build>
         <finalName>telegram-bot</finalName>
         <plugins>
+            <!-- Java compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -48,6 +49,7 @@
                     <release>${java.version}</release>
                 </configuration>
             </plugin>
+            <!-- Ensures proper JAR manifest configuration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -61,7 +63,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- Maven Shade Plugin to create fat JAR -->
+            <!-- Creates an executable fat JAR with dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -73,9 +75,19 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <!--
+                                Do not generate a dependency-reduced POM, which may cause issues
+                                if this artifact is deployed or reused as a dependency.
+                            -->
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <!--
+                                    Set the Main-Class in the JAR manifest so it can be executed
+                                    with `java -jar telegram-bot.jar`.
+                                -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.home.Main</mainClass>
                                 </transformer>
                             </transformers>
