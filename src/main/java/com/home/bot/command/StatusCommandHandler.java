@@ -52,20 +52,22 @@ public class StatusCommandHandler implements CommandHandler {
 
         var info = timedInfo.info();
 
-        messageSender.send(chatId, String.format("""
-                        📝 *Current Status*
-                        State: `%s`
-                        
-                        Price: %s
-                        Currency: %s
-                        Product: %s
-                        Quantity: %s
-                        """,
-                state,
-                info.price() > 0 ? (info.price() / 100.0) : "(not set)",
-                info.currency() != null ? info.currency() : "(not set)",
-                info.name() != null ? info.name() : "(not set)",
-                info.quantity() > 0 ? info.quantity() : "(not set)"
-        ));
+        messageSender.send(
+                chatId,
+                String.format(
+                        """
+                                📝 *Current Status*
+                                State: `%s`
+                                
+                                Price: %s
+                                Currency: %s
+                                Product: %s
+                                Quantity: %s
+                                """,
+                        state,
+                        info.price() > 0 ? (info.price() / 100.0) : "(not set)",
+                        info.currency() != null ? info.currency() : "(not set)",
+                        info.name() != null ? info.name() : "(not set)",
+                        info.quantity() > 0 ? info.quantity() : "(not set)"));
     }
 }

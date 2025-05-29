@@ -21,8 +21,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import java.util.List;
 
 /**
- * Entry point for the Telegram PaymentBot application.
- * Loads configuration, builds the bot instance, and registers it with the Telegram API.
+ * Entry point for the Telegram PaymentBot application. Loads configuration, builds the bot
+ * instance, and registers it with the Telegram API.
  */
 public class Main {
 
@@ -40,8 +40,11 @@ public class Main {
         var botConfig = BotConfig.load();
         var stripeConfig = StripeConfig.load();
 
-        log.info("Config loaded: bot.username={}, stripe.successUrl={}, stripe.cancelUrl={}",
-                botConfig.username(), stripeConfig.successUrl(), stripeConfig.cancelUrl());
+        log.info(
+                "Config loaded: bot.username={}, stripe.successUrl={}, stripe.cancelUrl={}",
+                botConfig.username(),
+                stripeConfig.successUrl(),
+                stripeConfig.cancelUrl());
 
         // 2. Create shared services
         var stripeLinkCreator = new StripeLinkCreator(stripeConfig);
@@ -64,7 +67,8 @@ public class Main {
      * @param botConfig         configuration for the bot (token, username)
      * @return fully configured PaymentBot
      */
-    private static PaymentBot buildPaymentBot(StripeLinkCreator stripeLinkCreator, BotConfig botConfig) {
+    private static PaymentBot buildPaymentBot(
+            StripeLinkCreator stripeLinkCreator, BotConfig botConfig) {
         // Instantiate the bot shell
         var paymentBot = new PaymentBot(botConfig);
 
@@ -75,19 +79,19 @@ public class Main {
         var sessionManager = new SessionManager();
 
         // Register command handlers (/start, /help, /cancel, /status)
-        var commandHandlers = List.of(
-                new HelpCommandHandler(messageSender),
-                new StartCommandHandler(sessionManager, messageSender),
-                new CancelCommandHandler(sessionManager, messageSender),
-                new StatusCommandHandler(sessionManager, messageSender)
-        );
+        var commandHandlers =
+                List.of(
+                        new HelpCommandHandler(messageSender),
+                        new StartCommandHandler(sessionManager, messageSender),
+                        new CancelCommandHandler(sessionManager, messageSender),
+                        new StatusCommandHandler(sessionManager, messageSender));
 
         // Register state input handlers (price, name, quantity)
-        var stateHandlers = List.of(
-                new PriceInputHandler(sessionManager, messageSender),
-                new NameInputHandler(sessionManager, messageSender),
-                new QuantityInputHandler(sessionManager, stripeLinkCreator, messageSender)
-        );
+        var stateHandlers =
+                List.of(
+                        new PriceInputHandler(sessionManager, messageSender),
+                        new NameInputHandler(sessionManager, messageSender),
+                        new QuantityInputHandler(sessionManager, stripeLinkCreator, messageSender));
 
         // Inject dependencies into the bot instance
         return paymentBot

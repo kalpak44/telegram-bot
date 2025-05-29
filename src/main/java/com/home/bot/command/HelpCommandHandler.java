@@ -37,7 +37,8 @@ public class HelpCommandHandler implements CommandHandler {
      */
     @Override
     public void handle(Long chatId) {
-        messageSender.send(chatId,
+        messageSender.send(
+                chatId,
                 """
                         🤖 *PaymentBot Help*
                         

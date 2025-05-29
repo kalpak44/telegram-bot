@@ -5,9 +5,9 @@ import java.io.UncheckedIOException;
 import java.util.Properties;
 
 /**
- * Loads configuration values from environment variables or a properties file.
- * Values are resolved in this order: 1. Environment variable (converted from key) 2.
- * config.properties file on classpath
+ * Loads configuration values from environment variables or a properties file. Values are resolved
+ * in this order: 1. Environment variable (converted from key) 2. config.properties file on
+ * classpath
  */
 public class Config {
     private static final Properties props = new Properties();

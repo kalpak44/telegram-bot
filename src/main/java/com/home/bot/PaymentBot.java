@@ -11,9 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.List;
 
 /**
- * PaymentBot is a Telegram bot that guides users through payment link creation via Stripe.
- * <p>
- * It handles both command messages (e.g. /start, /help) and stateful user input.
+ * PaymentBot is a Telegram bot that guides users through payment link creation via Stripe. It
+ * handles both command messages (e.g. /start, /help) and stateful user input.
  */
 public class PaymentBot extends TelegramLongPollingBot {
 
@@ -25,7 +24,8 @@ public class PaymentBot extends TelegramLongPollingBot {
     private MessageSender messageSender;
 
     /**
-     * Constructs a basic PaymentBot instance. Handlers and dependencies must be injected via `withX()` methods.
+     * Constructs a basic PaymentBot instance. Handlers and dependencies must be injected via
+     * `withX()` methods.
      *
      * @param botConfig the configuration used to initialize the bot
      */
@@ -40,8 +40,8 @@ public class PaymentBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Called by Telegram when an update (message) is received.
-     * Delegates to either a command handler or a state handler, or sends fallback if unmatched.
+     * Called by Telegram when an update (message) is received. Delegates to either a command handler
+     * or a state handler, or sends fallback if unmatched.
      *
      * @param update the Telegram update
      */
@@ -80,7 +80,6 @@ public class PaymentBot extends TelegramLongPollingBot {
         // 4. If input doesn't match anything, show fallback message
         messageSender.send(chatId, "Unexpected input. Please use /help.");
     }
-
 
     /**
      * Injects the message sender used to send responses to Telegram users.

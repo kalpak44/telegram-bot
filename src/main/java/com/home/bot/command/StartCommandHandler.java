@@ -10,8 +10,8 @@ import com.home.model.TimedProductInfo;
 import java.time.Instant;
 
 /**
- * Handles the /start command, which begins a new payment link session by
- * initializing user session state and prompting for the first input (price and currency).
+ * Handles the /start command, which begins a new payment link session by initializing user session
+ * state and prompting for the first input (price and currency).
  */
 public class StartCommandHandler implements CommandHandler {
 
@@ -55,8 +55,9 @@ public class StartCommandHandler implements CommandHandler {
         sessionManager.updateInfo(chatId, new TimedProductInfo(initialInfo, Instant.now()));
 
         // Prompt user to enter price and currency
-        messageSender.send(chatId,
-                "Please enter the price and currency in this format: 10.00 USD. " +
-                        "Supported currencies: https://docs.stripe.com/currencies");
+        messageSender.send(
+                chatId,
+                "Please enter the price and currency in this format: 10.00 USD. "
+                        + "Supported currencies: https://docs.stripe.com/currencies");
     }
 }

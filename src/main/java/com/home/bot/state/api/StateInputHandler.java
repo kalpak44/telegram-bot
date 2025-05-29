@@ -4,9 +4,9 @@ import com.home.model.State;
 
 /**
  * Interface for handling user input based on the current bot state.
- * <p>
- * Each implementation should respond to a specific {@link State}
- * and process the user's input accordingly.
+ *
+ * <p>Each implementation should respond to a specific {@link State} and process the user's input
+ * accordingly.
  */
 public interface StateInputHandler {
 

@@ -8,8 +8,8 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 /**
- * Default implementation of {@link MessageSender} that uses the Telegram Bot API
- * to send messages to a specific chat.
+ * Default implementation of {@link MessageSender} that uses the Telegram Bot API to send messages
+ * to a specific chat.
  */
 public class MessageSenderImpl implements MessageSender {
 
@@ -39,10 +39,7 @@ public class MessageSenderImpl implements MessageSender {
     public void send(Long chatId, String text) {
         try {
             // Build and send the message
-            SendMessage message = SendMessage.builder()
-                    .chatId(chatId.toString())
-                    .text(text)
-                    .build();
+            var message = SendMessage.builder().chatId(chatId.toString()).text(text).build();
 
             absSender.execute(message);
         } catch (TelegramApiException e) {

@@ -1,8 +1,8 @@
 package com.home.bot.command.api;
 
 /**
- * Represents a handler for a specific bot command (e.g., /start, /help).
- * Implementations of this interface define how to check and respond to a command.
+ * Represents a handler for a specific bot command (e.g., /start, /help). Implementations of this
+ * interface define how to check and respond to a command.
  */
 public interface CommandHandler {
 

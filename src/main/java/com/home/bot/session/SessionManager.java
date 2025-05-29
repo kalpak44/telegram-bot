@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages user session states and input data.
- * This includes tracking what step the user is in and their partial input (e.g., product details).
+ * Manages user session states and input data. This includes tracking what step the user is in and
+ * their partial input (e.g., product details).
  */
 public class SessionManager {
 
@@ -81,8 +81,7 @@ public class SessionManager {
      */
     public boolean isExpired(Long chatId) {
         var timedInfo = getInfo(chatId);
-        return timedInfo != null &&
-                Duration.between(timedInfo.timestamp(), Instant.now())
-                        .compareTo(SESSION_TTL) > 0;
+        return timedInfo != null
+                && Duration.between(timedInfo.timestamp(), Instant.now()).compareTo(SESSION_TTL) > 0;
     }
 }

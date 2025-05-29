@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 
 /**
- * Handles user input when the bot is expecting the price and currency.
- * Validates the format, stores it in session, and transitions to name input state.
+ * Handles user input when the bot is expecting the price and currency. Validates the format, stores
+ * it in session, and transitions to name input state.
  */
 public class PriceInputHandler implements StateInputHandler {
 
@@ -45,9 +45,8 @@ public class PriceInputHandler implements StateInputHandler {
     }
 
     /**
-     * Processes input assumed to be price and currency (e.g., "10.00 USD").
-     * On success, updates session and asks for product name.
-     * On error, notifies the user of format issues.
+     * Processes input assumed to be price and currency (e.g., "10.00 USD"). On success, updates
+     * session and asks for product name. On error, notifies the user of format issues.
      *
      * @param chatId user's chat ID
      * @param text   user input text
@@ -56,7 +55,8 @@ public class PriceInputHandler implements StateInputHandler {
     public void handle(Long chatId, String text) {
         var parts = text.trim().split(" ");
         if (parts.length != 2) {
-            messageSender.send(chatId,
+            messageSender.send(
+                    chatId,
                     "Invalid format. Please enter the price and currency in this format: 10.00 USD. Supported currencies: https://docs.stripe.com/currencies");
             return;
         }

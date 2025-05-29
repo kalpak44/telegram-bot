@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Handles input when the bot is waiting for the user to enter the product quantity.
- * After receiving a valid quantity, it creates a Stripe payment link and ends the session.
+ * Handles input when the bot is waiting for the user to enter the product quantity. After receiving
+ * a valid quantity, it creates a Stripe payment link and ends the session.
  */
 public class QuantityInputHandler implements StateInputHandler {
 
@@ -29,9 +29,10 @@ public class QuantityInputHandler implements StateInputHandler {
      * @param stripeLinkCreator Stripe payment link generator
      * @param messageSender     message sender to reply to the user
      */
-    public QuantityInputHandler(SessionManager sessionManager,
-                                StripeLinkCreator stripeLinkCreator,
-                                MessageSender messageSender) {
+    public QuantityInputHandler(
+            SessionManager sessionManager,
+            StripeLinkCreator stripeLinkCreator,
+            MessageSender messageSender) {
         this.sessionManager = sessionManager;
         this.stripeLinkCreator = stripeLinkCreator;
         this.messageSender = messageSender;

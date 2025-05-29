@@ -1,8 +1,8 @@
 package com.home.bot.common.api;
 
 /**
- * Functional interface for sending plain text messages to a Telegram chat.
- * Implementations handle the actual delivery mechanism using Telegram Bot API.
+ * Functional interface for sending plain text messages to a Telegram chat. Implementations handle
+ * the actual delivery mechanism using Telegram Bot API.
  */
 @FunctionalInterface
 public interface MessageSender {

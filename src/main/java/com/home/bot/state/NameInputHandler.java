@@ -10,8 +10,8 @@ import com.home.model.TimedProductInfo;
 import java.time.Instant;
 
 /**
- * Handles user input when the bot expects the product name.
- * Once the name is received, it transitions the session to wait for quantity.
+ * Handles user input when the bot expects the product name. Once the name is received, it
+ * transitions the session to wait for quantity.
  */
 public class NameInputHandler implements StateInputHandler {
 
@@ -41,8 +41,8 @@ public class NameInputHandler implements StateInputHandler {
     }
 
     /**
-     * Handles the user input assumed to be a product name.
-     * Updates the session with the product name and prompts for quantity.
+     * Handles the user input assumed to be a product name. Updates the session with the product name
+     * and prompts for quantity.
      *
      * @param chatId Telegram chat ID of the user
      * @param text   product name provided by the user
