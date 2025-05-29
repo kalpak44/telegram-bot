@@ -22,7 +22,7 @@ quantity).
 2. Navigate to **Developers > API keys**.
 3. Copy the following:
     - **Secret key** → e.g., `sk_test_...`
-    - (Optional) **Publishable key** → if needed for client-side logic
+    - **Publishable key** → e.g., `pk_test_...`
 4. Configure redirect URLs:
     - **Success URL** → e.g., `https://yourapp.com/success`
     - **Cancel URL** → e.g., `https://yourapp.com/cancel`
