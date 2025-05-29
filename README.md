@@ -75,13 +75,13 @@ mvn clean package -DskipTests
 ##### Build the Docker image
 
 ```bash
-docker build -t kalpak44/telegram-bot:latest .
+docker build -t my/telegram-bot:latest .
 ```
 
 ##### Run the container
 
 ```bash
-docker run --rm kalpak44/telegram-bot:latest
+docker run -d --name telegram-bot --restart=always -e "BOT_TOKEN=***" -e BOT_USERNAME="my_bot_name" -e PAYMENTS_STRIPE_KEY_SECRET="sk_live_***" -e PAYMENTS_STRIPE_KEY_PUBLIC="pk_live_***" -e PAYMENTS_STRIPE_SUCCESS_URL="https://example.com/thank-you.html" -e "PAYMENTS_STRIPE_CANCEL_URL=https://example.com/whoops.html" my/telegram-bot:latest
 ```
 
 ---
@@ -102,7 +102,7 @@ docker run --rm kalpak44/telegram-bot:latest
 - Java 17
 - TelegramBots API
 - Stripe Java SDK
-- Maven + Jib for containerization
+- Maven + Docker for containerization
 - SLF4J + Logback
 
 ---
@@ -111,4 +111,3 @@ docker run --rm kalpak44/telegram-bot:latest
 
 - [Telegram Bot API Docs](https://core.telegram.org/bots/api)
 - [Stripe Java SDK Docs](https://stripe.com/docs/api?lang=java)
-- [Jib Documentation](https://github.com/GoogleContainerTools/jib)
