@@ -7,7 +7,7 @@ quantity).
 
 ## Getting Started
 
-### 1.Create a Telegram Bot
+### 1. Create a Telegram Bot
 
 1. Open Telegram and message [`@BotFather`](https://t.me/BotFather).
 2. Run the command `/newbot`.
@@ -16,7 +16,7 @@ quantity).
 
 ---
 
-### 2.Set Up Stripe Account & Keys
+### 2. Set Up Stripe Account & Keys
 
 1. Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys/).
 2. Navigate to **Developers > API keys**.
@@ -81,7 +81,14 @@ docker build -t my/telegram-bot:latest .
 ##### Run the container
 
 ```bash
-docker run -d --name telegram-bot --restart=always -e "BOT_TOKEN=***" -e BOT_USERNAME="my_bot_name" -e PAYMENTS_STRIPE_KEY_SECRET="sk_live_***" -e PAYMENTS_STRIPE_KEY_PUBLIC="pk_live_***" -e PAYMENTS_STRIPE_SUCCESS_URL="https://example.com/thank-you.html" -e "PAYMENTS_STRIPE_CANCEL_URL=https://example.com/whoops.html" my/telegram-bot:latest
+docker run -d --name telegram-bot --restart=always \
+  -e BOT_TOKEN="***" \
+  -e BOT_USERNAME="my_bot_name" \
+  -e PAYMENTS_STRIPE_KEY_SECRET="sk_live_***" \
+  -e PAYMENTS_STRIPE_KEY_PUBLIC="pk_live_***" \
+  -e PAYMENTS_STRIPE_SUCCESS_URL="https://yourapp.com/success" \
+  -e PAYMENTS_STRIPE_CANCEL_URL="https://yourapp.com/cancel" \
+  my/telegram-bot:latest
 ```
 
 ---
@@ -97,17 +104,57 @@ docker run -d --name telegram-bot --restart=always -e "BOT_TOKEN=***" -e BOT_USE
 
 ---
 
-## Tech Stack
+## ⚙️ Project Goals & Platform Constraints
+
+### 🎯 Purpose: Lightweight, Framework-Free Telegram Bot
+
+This project is a **minimalist Java Telegram bot** for creating Stripe payment links, intentionally designed without any
+heavyweight frameworks (like Spring Boot or Jakarta EE). Its **small footprint and straightforward architecture** make
+it ideal for constrained environments like:
+
+- Raspberry Pi
+- ARMv7-based boards
+- Lightweight Docker containers
+
+### 🚫 Why No Frameworks?
+
+This bot avoids frameworks for these reasons:
+
+- 🚀 **Fast startup** – no classpath scanning or auto-wiring
+- 🧠 **Simple lifecycle** – easy to maintain and debug
+- ⚙️ **Minimal dependencies** – only uses Telegram, Stripe, SLF4J/Logback
+- 📦 **Tiny Docker image** – suitable for embedded or edge devices
+- 🧱 **Custom command flow** – cleanly modeled with interfaces (`CommandHandler`, `StateInputHandler`)
+
+---
+
+## 🏗️ Summary of Design Intent
+
+| Component                              | Purpose                                        |
+|----------------------------------------|------------------------------------------------|
+| `PaymentBot`                           | Core bot class, Telegram API polling           |
+| `SessionManager`                       | In-memory session tracking (price, state, etc) |
+| `CommandHandler` / `StateInputHandler` | Handles command flow and data input stages     |
+| `MessageSender`                        | Message abstraction (easy for testing)         |
+| **Maven Shade Plugin**                 | Creates single runnable JAR                    |
+| **ARM32v7-compatible Docker image**    | Can run on devices like Raspberry Pi           |
+
+---
+
+## 🧪 Tech Stack
 
 - Java 17
 - TelegramBots API
 - Stripe Java SDK
-- Maven + Docker for containerization
-- SLF4J + Logback
+- SLF4J + Logback (logging)
+- Maven (build) + Docker (runtime)
 
 ---
 
-## Resources
+## 📚 Resources
 
 - [Telegram Bot API Docs](https://core.telegram.org/bots/api)
 - [Stripe Java SDK Docs](https://stripe.com/docs/api?lang=java)
+- [Stripe Checkout Docs](https://stripe.com/docs/checkout)
+
+---
