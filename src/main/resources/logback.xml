@@ -14,5 +14,5 @@
     </root>
 
     <!-- Enable DEBUG logging for application-specific classes -->
-    <logger name="com.home" level="INFO"/>
+    <logger name="com.home" level="DEBUG"/>
 </configuration>
